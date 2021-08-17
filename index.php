@@ -13,13 +13,26 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class CustomBlock {
   function __construct() {
-    // Load block when on new block screen
-    add_action('enqueue_block_editor_assets', array($this, 'adminAssets'));
+    add_action('init', array($this, 'adminAssets'));
   }
 
   function adminAssets() {
     // Give name, location, dependencies
-    wp_enqueue_script('customblocktype', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-blocks', 'wp-element'));
+    // Register script instead of loading
+    wp_register_script('customblocktype', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-blocks', 'wp-element'));
+    register_block_type('vbplugin/custom-block-type', array(
+      // Which JS file to load for this block
+      'editor_script' => 'customblocktype',
+      'render_callback' => array($this, 'theHTML')
+    ));
+  }
+
+  function theHTML($attributes) {
+    // ob = output buffer
+    // Anything between ob_start() and ob_clean() will get returned
+    ob_start(); ?>
+      <h3>Today the sky is completely <?php echo esc_html($attributes['skyColour']); ?> and the grass is <?php echo esc_html($attributes['grassColour']); ?>!!!</h3>';
+    <?php return ob_get_clean();
   }
 }
 
