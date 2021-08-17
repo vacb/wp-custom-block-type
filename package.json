@@ -1,0 +1,25 @@
+{
+  "name": "custom-block",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vacb/wp-custom-block-type.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vacb/wp-custom-block-type/issues"
+  },
+  "homepage": "https://github.com/vacb/wp-custom-block-type#readme",
+  "devDependencies": {
+    "@wordpress/scripts": "^17.1.0"
+  }
+}
