@@ -108,15 +108,19 @@ __webpack_require__.r(__webpack_exports__);
 
 const divsToUpdate = document.querySelectorAll(".custom-block-update-me");
 divsToUpdate.forEach(function (div) {
-  // Component to render, into which div
-  react_dom__WEBPACK_IMPORTED_MODULE_2___default.a.render(Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Quiz, null), div);
+  // Find JSON-encoded attributes in the 'pre' div created by index.php and parse to use as props
+  const data = JSON.parse(div.querySelector("pre").innerHTML); // Component to render, into which div
+
+  react_dom__WEBPACK_IMPORTED_MODULE_2___default.a.render(Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Quiz, data), div);
   div.classList.remove("custom-block-frontend");
 });
 
-function Quiz() {
+function Quiz(props) {
   return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
     className: "custom-block-frontend"
-  }, "Hello from React");
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", null, props.question), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, props.answers.map(answer => {
+    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", null, answer);
+  })));
 }
 
 /***/ }),

@@ -29,7 +29,7 @@ class CustomBlock {
     ));
   }
 
-
+  // RENDER CALLBACK FUNCTION
   // Only runs if current page or post uses our blocktype
   function theHTML($attributes) {
     // Only want to load on front end i.e.
@@ -41,7 +41,8 @@ class CustomBlock {
     // ob = output buffer
     // Anything between ob_start() and ob_clean() will get returned
     ob_start(); ?>
-      <div class="custom-block-update-me"></div>
+      
+      <div class="custom-block-update-me"><pre style="display: none"><?php echo wp_json_encode($attributes); ?></pre></div>
     <?php return ob_get_clean();
   }
 }
