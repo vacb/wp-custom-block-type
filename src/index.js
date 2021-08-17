@@ -35,9 +35,41 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
   save: function (props) {
     return (
       <p>
-        Today the sky is {props.attributes.skyColour} and the grass is{" "}
-        {props.attributes.grassColour}
+        Today the sky is really, really {props.attributes.skyColour} and the
+        grass is very {props.attributes.grassColour}
       </p>
     );
   },
+  // Deprecated section lets you make changes to the block without having to delete and re-add it in the editor
+  // Place a copy of all code to be changed here
+  deprecated: [
+    {
+      attributes: {
+        skyColour: { type: "string" },
+        grassColour: { type: "string" },
+      },
+      save: function (props) {
+        return (
+          <p>
+            Today the sky is really {props.attributes.skyColour} and the grass
+            is very {props.attributes.grassColour}
+          </p>
+        );
+      },
+    },
+    {
+      attributes: {
+        skyColour: { type: "string" },
+        grassColour: { type: "string" },
+      },
+      save: function (props) {
+        return (
+          <p>
+            Today the sky is {props.attributes.skyColour} and the grass is{" "}
+            {props.attributes.grassColour}
+          </p>
+        );
+      },
+    },
+  ],
 });
