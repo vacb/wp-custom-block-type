@@ -104,6 +104,29 @@ __webpack_require__.r(__webpack_exports__);
  // Import WP components
 
 
+
+(function () {
+  let locked = false; // Calls function any time the data on the block editor as a whole changes
+
+  wp.data.subscribe(function () {
+    const results = wp.data.select("core/block-editor").getBlocks().filter(block => {
+      return block.name == "vbplugin/custom-block-type" && block.attributes.correctAnswer == undefined // Returned array will be empty unless there is a block that hasn't marked a correct answer yet
+      ;
+    });
+
+    if (results.length && locked == false) {
+      locked = true;
+      wp.data.dispatch("core/editor").lockPostSaving("noanswer");
+    }
+
+    if (!results.length && locked == true) {
+      locked = false;
+      wp.data.dispatch("core/editor").unlockPostSaving("noanswer");
+    }
+  });
+})(); // Syntax () after the anon function definition wrapped in parens is an immediately invoked function expression IIFE - scoped variables - don't accidentally mess up globally scoped WP variables
+
+
 wp.blocks.registerBlockType("vbplugin/custom-block-type", {
   title: "Are You Paying Attention?",
   icon: "smiley",
@@ -114,7 +137,12 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
     },
     answers: {
       type: "array",
-      default: ["red", "blue"]
+      default: [""]
+    },
+    // Use undefined as default because working with an array can mean correct answer index is 0, makes boolean checks more difficult.
+    correctAnswer: {
+      type: "number",
+      default: undefined
     }
   },
   // Code in post body
@@ -133,7 +161,8 @@ function EditComponent(props) {
     props.setAttributes({
       question: value
     });
-  }
+  } // DELETE ANSWER
+
 
   function deleteAnswer(indexToDelete) {
     const newAnswers = props.attributes.answers.filter((x, index) => {
@@ -141,6 +170,19 @@ function EditComponent(props) {
     });
     props.setAttributes({
       answers: newAnswers
+    });
+
+    if (indexToDelete == props.attributes.correctAnswer) {
+      props.setAttributes({
+        correctAnswer: undefined
+      });
+    }
+  } // MARK CORRECT ITEM
+
+
+  function markAsCorrect(index) {
+    props.setAttributes({
+      correctAnswer: index
     });
   }
 
@@ -173,8 +215,12 @@ function EditComponent(props) {
           answers: newAnswers
         });
       }
-    })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
-      icon: "star-empty",
+    })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+      onClick: () => {
+        markAsCorrect(index);
+      }
+    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
+      icon: index == props.attributes.correctAnswer ? "star-filled" : "star-empty",
       className: "mark-as-correct"
     }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
       isLink: true,
