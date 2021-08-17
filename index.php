@@ -17,12 +17,14 @@ class CustomBlock {
   }
 
   function adminAssets() {
+    wp_register_style('customeditcss', plugin_dir_url(__FILE__) . 'build/index.css');
     // Give name, location, dependencies
-    // Register script instead of loading
-    wp_register_script('customblocktype', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-blocks', 'wp-element'));
+    // Register script instead of loading - last arg array lists dependencies
+    wp_register_script('customblocktype', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-blocks', 'wp-element', 'wp-editor'));
     register_block_type('vbplugin/custom-block-type', array(
       // Which JS file to load for this block
       'editor_script' => 'customblocktype',
+      'editor_style' => 'customeditcss',
       'render_callback' => array($this, 'theHTML')
     ));
   }
