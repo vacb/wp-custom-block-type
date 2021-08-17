@@ -14,8 +14,11 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
   icon: "smiley",
   category: "common",
   attributes: {
-    skyColour: { type: "string" },
-    grassColour: { type: "string" },
+    question: { type: "string" },
+    answers: {
+      type: "array",
+      default: ["red", "blue"],
+    },
   },
   // Code in post body
   edit: EditComponent,
@@ -28,32 +31,74 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
 });
 
 function EditComponent(props) {
-  function updateSkyColour(event) {
-    props.setAttributes({ skyColour: event.target.value });
+  // TextControl component passes value directly, no need for event
+  function updateQuestion(value) {
+    props.setAttributes({ question: value });
   }
-  function updateGrassColour(event) {
-    props.setAttributes({ grassColour: event.target.value });
+
+  function deleteAnswer(indexToDelete) {
+    const newAnswers = props.attributes.answers.filter((x, index) => {
+      return index != indexToDelete;
+    });
+    props.setAttributes({ answers: newAnswers });
   }
+
   return (
     <div className="custom-edit-block">
-      <TextControl label="Question:" style={{ fontSize: "20px" }} />
+      <TextControl
+        label="Question:"
+        style={{ fontSize: "20px" }}
+        value={props.attributes.question}
+        onChange={updateQuestion}
+      />
       <p style={{ fontSize: "13px", margin: "20px 0 8px 0" }}>Answers:</p>
-      <Flex>
-        <FlexBlock>
-          <TextControl />
-        </FlexBlock>
-        <FlexItem>
-          <Button>
-            <Icon icon="star-empty" className="mark-as-correct" />
-          </Button>
-        </FlexItem>
-        <FlexItem>
-          <Button isLink className="attention-delete">
-            Delete
-          </Button>
-        </FlexItem>
-      </Flex>
-      <Button isPrimary>Add another answer</Button>
+      {props.attributes.answers.map((answer, index) => {
+        return (
+          <Flex>
+            <FlexBlock>
+              {/* Make text box editable by adding onChange function */}
+              <TextControl
+                // Autofocus the only answer set to undefined i.e. one just created
+                autoFocus={answer == undefined}
+                value={answer}
+                onChange={(newValue) => {
+                  // Make a copy of the array - don't mutate state
+                  const newAnswers = props.attributes.answers.concat([]);
+                  // Map can pass index as second param
+                  newAnswers[index] = newValue;
+                  // Set state to new array
+                  props.setAttributes({ answers: newAnswers });
+                }}
+              />
+            </FlexBlock>
+            <FlexItem>
+              <Button>
+                <Icon icon="star-empty" className="mark-as-correct" />
+              </Button>
+            </FlexItem>
+            <FlexItem>
+              <Button
+                isLink
+                className="attention-delete"
+                onClick={() => deleteAnswer(index)}
+              >
+                Delete
+              </Button>
+            </FlexItem>
+          </Flex>
+        );
+      })}
+      <Button
+        isPrimary
+        onClick={() => {
+          props.setAttributes({
+            // Set default value to undefined to allow autofocus above
+            answers: props.attributes.answers.concat([undefined]),
+          });
+        }}
+      >
+        Add another answer
+      </Button>
     </div>
   );
 }
