@@ -29,11 +29,19 @@ class CustomBlock {
     ));
   }
 
+
+  // Only runs if current page or post uses our blocktype
   function theHTML($attributes) {
+    // Only want to load on front end i.e.
+    if (!is_admin()) {
+      // wp-element is WP version of React, abstracted into their own script
+      wp_enqueue_script('attentionFrontend', plugin_dir_url(__FILE__) . 'build/frontend.js', array('wp-element'));
+      wp_enqueue_style('attentionFrontendStyles', plugin_dir_url(__FILE__) . 'build/frontend.css');
+    }
     // ob = output buffer
     // Anything between ob_start() and ob_clean() will get returned
     ob_start(); ?>
-      <h3>Today the sky is completely <?php echo esc_html($attributes['skyColour']); ?> and the grass is <?php echo esc_html($attributes['grassColour']); ?>!!!</h3>';
+      <div class="custom-block-update-me"></div>
     <?php return ob_get_clean();
   }
 }
