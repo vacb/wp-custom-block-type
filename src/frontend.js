@@ -39,7 +39,10 @@ function Quiz(props) {
   }
 
   return (
-    <div className="custom-block-frontend">
+    <div
+      className="custom-block-frontend"
+      style={{ backgroundColor: props.bgColor }}
+    >
       <p>{props.question}</p>
       <ul>
         {props.answers.map((answer, index) => {

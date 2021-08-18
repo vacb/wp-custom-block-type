@@ -141,7 +141,10 @@ function Quiz(props) {
   }
 
   return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
-    className: "custom-block-frontend"
+    className: "custom-block-frontend",
+    style: {
+      backgroundColor: props.bgColor
+    }
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", null, props.question), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("ul", null, props.answers.map((answer, index) => {
     return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("li", {
       className: (isCorrectDelayed && index == props.correctAnswer ? "no-click" : "") + (isCorrectDelayed && index != props.correctAnswer ? "fade-incorrect" : ""),
