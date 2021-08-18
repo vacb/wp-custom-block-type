@@ -100,8 +100,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.scss */ "./src/index.scss");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
 
  // Import WP components
+
+ // For right-hand options area, plus PanelBody, PanelRow and ColorPicker above
 
 
 
@@ -143,6 +147,11 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
     correctAnswer: {
       type: "number",
       default: undefined
+    },
+    // Attribute to store block background colour chosen by admin
+    bgColor: {
+      type: "string",
+      default: "#EBEBEB"
     }
   },
   // Code in post body
@@ -153,7 +162,7 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
     // Register a block type in our PHP code with the exact same name with a PHP render function responsible for output
     return null;
   }
-});
+}); // EDIT BLOCK
 
 function EditComponent(props) {
   // TextControl component passes value directly, no need for event
@@ -186,56 +195,71 @@ function EditComponent(props) {
     });
   }
 
-  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
-    className: "custom-edit-block"
-  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"], {
-    label: "Question:",
-    style: {
-      fontSize: "20px"
-    },
-    value: props.attributes.question,
-    onChange: updateQuestion
-  }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
-    style: {
-      fontSize: "13px",
-      margin: "20px 0 8px 0"
-    }
-  }, "Answers:"), props.attributes.answers.map((answer, index) => {
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Flex"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexBlock"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"] // Autofocus the only answer set to undefined i.e. one just created
-    , {
-      autoFocus: answer == undefined,
-      value: answer,
-      onChange: newValue => {
-        // Make a copy of the array - don't mutate state
-        const newAnswers = props.attributes.answers.concat([]); // Map can pass index as second param
-
-        newAnswers[index] = newValue; // Set state to new array
-
+  return (// Use background colour from attributes
+    Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+      className: "custom-edit-block",
+      style: {
+        backgroundColor: props.attributes.bgColor
+      }
+    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["PanelBody"], {
+      title: "Background Colour",
+      initialOpen: true
+    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["PanelRow"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["ColorPicker"], {
+      color: props.attributes.bgColor,
+      onChangeComplete: x => {
         props.setAttributes({
-          answers: newAnswers
+          bgColor: x.hex
         });
       }
-    })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
-      onClick: () => {
-        markAsCorrect(index);
+    })))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"], {
+      label: "Question:",
+      style: {
+        fontSize: "20px"
+      },
+      value: props.attributes.question,
+      onChange: updateQuestion
+    }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+      style: {
+        fontSize: "13px",
+        margin: "20px 0 8px 0"
       }
-    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
-      icon: index == props.attributes.correctAnswer ? "star-filled" : "star-empty",
-      className: "mark-as-correct"
-    }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
-      isLink: true,
-      className: "attention-delete",
-      onClick: () => deleteAnswer(index)
-    }, "Delete")));
-  }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
-    isPrimary: true,
-    onClick: () => {
-      props.setAttributes({
-        // Set default value to undefined to allow autofocus above
-        answers: props.attributes.answers.concat([undefined])
-      });
-    }
-  }, "Add another answer"));
+    }, "Answers:"), props.attributes.answers.map((answer, index) => {
+      return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Flex"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexBlock"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["TextControl"] // Autofocus the only answer set to undefined i.e. one just created
+      , {
+        autoFocus: answer == undefined,
+        value: answer,
+        onChange: newValue => {
+          // Make a copy of the array - don't mutate state
+          const newAnswers = props.attributes.answers.concat([]); // Map can pass index as second param
+
+          newAnswers[index] = newValue; // Set state to new array
+
+          props.setAttributes({
+            answers: newAnswers
+          });
+        }
+      })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+        onClick: () => {
+          markAsCorrect(index);
+        }
+      }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
+        icon: index == props.attributes.correctAnswer ? "star-filled" : "star-empty",
+        className: "mark-as-correct"
+      }))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["FlexItem"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+        isLink: true,
+        className: "attention-delete",
+        onClick: () => deleteAnswer(index)
+      }, "Delete")));
+    }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+      isPrimary: true,
+      onClick: () => {
+        props.setAttributes({
+          // Set default value to undefined to allow autofocus above
+          answers: props.attributes.answers.concat([undefined])
+        });
+      }
+    }, "Add another answer"))
+  );
 }
 
 /***/ }),
@@ -251,6 +275,17 @@ function EditComponent(props) {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() { module.exports = window["wp"]["blockEditor"]; }());
 
 /***/ }),
 

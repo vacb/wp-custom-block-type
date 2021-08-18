@@ -7,7 +7,12 @@ import {
   FlexItem,
   Button,
   Icon,
+  PanelBody,
+  PanelRow,
+  ColorPicker,
 } from "@wordpress/components";
+// For right-hand options area, plus PanelBody, PanelRow and ColorPicker above
+import { InspectorControls } from "@wordpress/block-editor";
 
 (function () {
   let locked = false;
@@ -49,6 +54,8 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
     },
     // Use undefined as default because working with an array can mean correct answer index is 0, makes boolean checks more difficult.
     correctAnswer: { type: "number", default: undefined },
+    // Attribute to store block background colour chosen by admin
+    bgColor: { type: "string", default: "#EBEBEB" },
   },
   // Code in post body
   edit: EditComponent,
@@ -60,6 +67,7 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
   },
 });
 
+// EDIT BLOCK
 function EditComponent(props) {
   // TextControl component passes value directly, no need for event
   function updateQuestion(value) {
@@ -83,7 +91,25 @@ function EditComponent(props) {
   }
 
   return (
-    <div className="custom-edit-block">
+    // Use background colour from attributes
+    <div
+      className="custom-edit-block"
+      style={{ backgroundColor: props.attributes.bgColor }}
+    >
+      {/* RIGHT-HAND OPTIONS PANEL */}
+      <InspectorControls>
+        <PanelBody title="Background Colour" initialOpen={true}>
+          <PanelRow>
+            {/* hex offered by WP ColorPicker component */}
+            <ColorPicker
+              color={props.attributes.bgColor}
+              onChangeComplete={(x) => {
+                props.setAttributes({ bgColor: x.hex });
+              }}
+            />
+          </PanelRow>
+        </PanelBody>
+      </InspectorControls>
       {/* QUESTION TEXT BOX */}
       <TextControl
         label="Question:"
