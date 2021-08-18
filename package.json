@@ -21,5 +21,8 @@
   "homepage": "https://github.com/vacb/wp-custom-block-type#readme",
   "devDependencies": {
     "@wordpress/scripts": "^17.1.0"
+  },
+  "dependencies": {
+    "react-color": "^2.19.3"
   }
 }

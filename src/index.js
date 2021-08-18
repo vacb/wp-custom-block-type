@@ -13,6 +13,7 @@ import {
 } from "@wordpress/components";
 // For right-hand options area, plus PanelBody, PanelRow and ColorPicker above
 import { InspectorControls } from "@wordpress/block-editor";
+import { ChromePicker } from "react-color";
 
 (function () {
   let locked = false;
@@ -101,11 +102,13 @@ function EditComponent(props) {
         <PanelBody title="Background Colour" initialOpen={true}>
           <PanelRow>
             {/* hex offered by WP ColorPicker component */}
-            <ColorPicker
+            {/* disableAlpha stops admin changing transparency */}
+            <ChromePicker
               color={props.attributes.bgColor}
               onChangeComplete={(x) => {
                 props.setAttributes({ bgColor: x.hex });
               }}
+              disableAlpha={true}
             />
           </PanelRow>
         </PanelBody>
