@@ -12,7 +12,11 @@ import {
   ColorPicker,
 } from "@wordpress/components";
 // For right-hand options area, plus PanelBody, PanelRow and ColorPicker above
-import { InspectorControls } from "@wordpress/block-editor";
+import {
+  InspectorControls,
+  BlockControls,
+  AlignmentToolbar,
+} from "@wordpress/block-editor";
 import { ChromePicker } from "react-color";
 
 (function () {
@@ -57,6 +61,7 @@ wp.blocks.registerBlockType("vbplugin/custom-block-type", {
     correctAnswer: { type: "number", default: undefined },
     // Attribute to store block background colour chosen by admin
     bgColor: { type: "string", default: "#EBEBEB" },
+    theAlignment: { type: "string", default: "left" },
   },
   // Code in post body
   edit: EditComponent,
@@ -97,6 +102,13 @@ function EditComponent(props) {
       className="custom-edit-block"
       style={{ backgroundColor: props.attributes.bgColor }}
     >
+      {/* TOOLBAR OPTIONS FOR TEXT ALIGNMENT - USED ON FRONT END ONLY */}
+      <BlockControls>
+        <AlignmentToolbar
+          value={props.attributes.theAlignment}
+          onChange={(x) => props.setAttributes({ theAlignment: x })}
+        />
+      </BlockControls>
       {/* RIGHT-HAND OPTIONS PANEL */}
       <InspectorControls>
         <PanelBody title="Background Colour" initialOpen={true}>

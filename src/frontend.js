@@ -41,7 +41,7 @@ function Quiz(props) {
   return (
     <div
       className="custom-block-frontend"
-      style={{ backgroundColor: props.bgColor }}
+      style={{ backgroundColor: props.bgColor, textAlign: props.theAlignment }}
     >
       <p>{props.question}</p>
       <ul>
